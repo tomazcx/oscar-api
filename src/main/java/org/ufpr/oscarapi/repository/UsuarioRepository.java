@@ -18,7 +18,7 @@ public class UsuarioRepository {
     public Optional<Usuario> findByLogin(String login) {
         var result = jdbc.query(
                 "SELECT id, login, senha FROM usuarios WHERE login = ?",
-                (rs, row) -> new Usuario(rs.getLong("id"), rs.getString("login"), rs.getString("senha")),
+                (rs, row) -> new Usuario(rs.getLong("id"), rs.getString("login"), rs.getString("senha"), rs.getInt("tokenVotacao")),
                 login
         );
         return result.stream().findFirst();

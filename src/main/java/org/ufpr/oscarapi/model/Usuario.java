@@ -1,3 +1,3 @@
 package org.ufpr.oscarapi.model;
 
-public record Usuario(Long id, String login, String senha) {}
+public record Usuario(Long id, String login, String senha, Integer tokenVotacao) {}

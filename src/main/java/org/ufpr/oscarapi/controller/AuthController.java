@@ -13,6 +13,8 @@ import org.ufpr.oscarapi.dto.LoginResponse;
 import org.ufpr.oscarapi.repository.UsuarioRepository;
 import org.ufpr.oscarapi.security.JwtUtil;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 @RestController
 @RequestMapping("/auth")
 @Tag(name = "Autenticação")
@@ -29,13 +31,28 @@ public class AuthController {
     @PostMapping("/login")
     @Operation(summary = "Autentica o usuário e retorna um JWT")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+
         return usuarioRepository.findByLogin(request.login())
                 .filter(u -> u.senha().equals(request.senha()))
                 .map(u -> {
                     String token = jwtUtil.generateToken(u.login());
-                    return ResponseEntity.ok(new LoginResponse(true, token, "Login realizado com sucesso"));
+                    Integer tokenVotacao = ThreadLocalRandom.current().nextInt(0, 101);
+
+                    return ResponseEntity.ok(
+                            new LoginResponse(
+                                    true,
+                                    token,
+                                    "Login realizado com sucesso",
+                                    tokenVotacao
+                            )
+                    );
                 })
                 .orElse(ResponseEntity.status(401)
-                        .body(new LoginResponse(false, null, "Login ou senha inválidos")));
+                        .body(new LoginResponse(
+                                false,
+                                null,
+                                "Login ou senha inválidos",
+                                null
+                        )));
     }
 }
