@@ -13,7 +13,7 @@ import org.ufpr.oscarapi.dto.LoginResponse;
 import org.ufpr.oscarapi.repository.UsuarioRepository;
 import org.ufpr.oscarapi.security.JwtUtil;
 
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/auth")
@@ -22,6 +22,7 @@ public class AuthController {
 
     private final UsuarioRepository usuarioRepository;
     private final JwtUtil jwtUtil;
+    private final Random gerador = new Random();
 
     public AuthController(UsuarioRepository usuarioRepository, JwtUtil jwtUtil) {
         this.usuarioRepository = usuarioRepository;
@@ -31,12 +32,11 @@ public class AuthController {
     @PostMapping("/login")
     @Operation(summary = "Autentica o usuário e retorna um JWT")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
-
         return usuarioRepository.findByLogin(request.login())
                 .filter(u -> u.senha().equals(request.senha()))
                 .map(u -> {
                     String token = jwtUtil.generateToken(u.login());
-                    Integer tokenVotacao = ThreadLocalRandom.current().nextInt(0, 101);
+                    Integer tokenVotacao = gerador.nextInt(101);
 
                     return ResponseEntity.ok(
                             new LoginResponse(
