@@ -52,6 +52,11 @@ public class VotoController {
                     .body(new ApiResponse(false, "Voto já registrado para este usuário"));
         }
 
+        if (usuario.tokenVotacao().intValue() != request.tokenVotacao().intValue()) {
+            return ResponseEntity.status(403)
+                    .body(new ApiResponse(false, "Token de votação inválido"));
+        }
+
         votoRepository.save(usuario.id(), request.filmeId(), request.diretorId());
         return ResponseEntity.ok(new ApiResponse(true, "Voto confirmado com sucesso"));
     }

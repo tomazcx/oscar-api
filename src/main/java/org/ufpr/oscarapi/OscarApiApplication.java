@@ -11,14 +11,15 @@ public class OscarApiApplication {
     private static final Logger log = LoggerFactory.getLogger(OscarApiApplication.class);
 
     public static void main(String[] args) {
-        log.info("=== ENV VARS ===");
-        log.info("PGHOST={}", System.getenv("PGHOST"));
-        log.info("PGPORT={}", System.getenv("PGPORT"));
-        log.info("PGDATABASE={}", System.getenv("PGDATABASE"));
-        log.info("PGUSER={}", System.getenv("PGUSER"));
-        log.info("PGPASSWORD={}", System.getenv("PGPASSWORD") != null ? "***set***" : "NOT SET");
-        log.info("================");
-        SpringApplication.run(OscarApiApplication.class, args);
+        var context = SpringApplication.run(OscarApiApplication.class, args);
+        var env = context.getEnvironment();
+        log.info("=== CONFIGURAÇÕES CARREGADAS ===");
+        log.info("PGHOST={}", env.getProperty("PGHOST"));
+        log.info("PGPORT={}", env.getProperty("PGPORT"));
+        log.info("PGDATABASE={}", env.getProperty("PGDATABASE"));
+        log.info("PGUSER={}", env.getProperty("PGUSER"));
+        log.info("PGPASSWORD={}", env.getProperty("PGPASSWORD") != null ? "***definida***" : "NÃO DEFINIDA");
+        log.info("================================");
     }
 
 }

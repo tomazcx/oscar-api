@@ -13,8 +13,11 @@ CREATE TABLE IF NOT EXISTS diretores (
 CREATE TABLE IF NOT EXISTS usuarios (
     id    SERIAL       PRIMARY KEY,
     login VARCHAR(50)  NOT NULL UNIQUE,
-    senha VARCHAR(255) NOT NULL
+    senha VARCHAR(255) NOT NULL,
+    tokenvotacao INTEGER DEFAULT 0
 );
+
+ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS tokenvotacao INTEGER DEFAULT 0;
 
 CREATE INDEX IF NOT EXISTS idx_usuarios_login ON usuarios (login);
 
