@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.ufpr.oscarapi.dto.LoginRequest;
 import org.ufpr.oscarapi.dto.LoginResponse;
+import org.ufpr.oscarapi.model.Usuario;
 import org.ufpr.oscarapi.repository.UsuarioRepository;
 import org.ufpr.oscarapi.security.JwtUtil;
 
@@ -32,27 +33,37 @@ public class AuthController {
     @PostMapping("/login")
     @Operation(summary = "Autentica o usuário e retorna um JWT")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
-        return usuarioRepository.findByLogin(request.login())
-                .filter(u -> u.senha().equals(request.senha()))
-                .map(u -> {
-                    String token = jwtUtil.generateToken(u.login());
-                    Integer tokenVotacao = gerador.nextInt(101);
 
-                    return ResponseEntity.ok(
-                            new LoginResponse(
-                                    true,
-                                    token,
-                                    "Login realizado com sucesso",
-                                    tokenVotacao
-                            )
+        var u = usuarioRepository.findByLogin(request.login())
+                .filter(u1 -> u1.senha().equals(request.senha()));
+        Integer tokenVotacao = gerador.nextInt(101);
+
+        if (u.isEmpty()) {
+            return ResponseEntity.status(401)
+                    .body(new LoginResponse(
+                            false,
+                            null,
+                            "Login ou senha inválidos",
+                            null)
                     );
-                })
-                .orElse(ResponseEntity.status(401)
-                        .body(new LoginResponse(
-                                false,
-                                null,
-                                "Login ou senha inválidos",
-                                null
-                        )));
+        }
+
+        var newU = new Usuario(
+                u.get().id(),
+                u.get().login(),
+                u.get().senha(),
+                tokenVotacao);
+
+        usuarioRepository.update(newU);
+
+
+        return ResponseEntity.ok(
+                new LoginResponse(
+                        true,
+                        jwtUtil.generateToken(newU.login()),
+                        "Login realizado com sucesso",
+                        tokenVotacao
+                )
+        );
     }
 }

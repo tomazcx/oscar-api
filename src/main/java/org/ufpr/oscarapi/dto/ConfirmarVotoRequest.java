@@ -4,5 +4,6 @@ import jakarta.validation.constraints.NotNull;
 
 public record ConfirmarVotoRequest(
         @NotNull(message = "filmeId é obrigatório") Integer filmeId,
-        @NotNull(message = "diretorId é obrigatório") Integer diretorId
+        @NotNull(message = "diretorId é obrigatório") Integer diretorId,
+        @NotNull(message = "token de votação é obrigatório") Integer tokenVotacao
 ) {}

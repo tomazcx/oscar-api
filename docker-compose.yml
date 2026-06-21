@@ -1,0 +1,46 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: oscar-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: oscar-db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "123456"
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d oscar-db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: oscar-api
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    env_file: .env
+    environment:
+      - PGHOST=postgres
+      - PGPORT=5432
+      - PGDATABASE=oscar-db
+      - PGUSER=postgres
+      - PGPASSWORD=123456
+      - JWT_SECRET=Zm9yMmUyMmUyMmUyMmUyMmUyMmUyMmUyMmU=
+      - SENHA_ALICE=123456
+      - SENHA_BOB=123456
+      - SENHA_CAROL=123456
+      - SENHA_DAVE=123456
+      - SENHA_EVE=123456
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:
