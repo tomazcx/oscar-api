@@ -53,7 +53,7 @@ public class VotoController {
         }
 
         if (usuario.tokenVotacao().intValue() != request.tokenVotacao().intValue()) {
-            return ResponseEntity.status(403)
+            return ResponseEntity.status(400)
                     .body(new ApiResponse(false, "Token de votação inválido"));
         }
 

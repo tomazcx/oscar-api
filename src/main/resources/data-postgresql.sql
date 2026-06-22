@@ -1,3 +1,5 @@
+TRUNCATE TABLE filmes, diretores RESTART IDENTITY CASCADE;
+
 INSERT INTO filmes (nome, genero, foto) VALUES
     ('Piratas do Caribe', 'Aventura', 'https://m.media-amazon.com/images/M/MV5BNDhlMzEyNzItMTA5Mi00YWRhLThlNTktYTQyMTA0MDIyNDEyXkEyXkFqcGc@._V1_.jpg'),
     ('La La Land',        'Musical',  'https://m.media-amazon.com/images/M/MV5BMzUzNDM2NzM2MV5BMl5BanBnXkFtZTgwNTM3NTg4OTE@._V1_.jpg'),
